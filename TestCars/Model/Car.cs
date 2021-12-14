@@ -10,9 +10,9 @@ namespace TestCars.Model
         public string Model { get; set; }
         public string Color { get; set; }
         public string Equipment { get; set; }
-        public float Price { get; set; }
+        public decimal? Price { get; set; }
 
-        public Car(string brand, string model, string color, string equipment, float price)            
+        public Car(string brand, string model, string color, string equipment, decimal? price)            
         {
             Brand = brand;
             Model = model;

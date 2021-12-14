@@ -32,19 +32,22 @@ namespace TestCars
             else
             {
                 var existingCar = _unitOfWork.Query<Car>().SingleOrDefault(x => x.Id == carEdt.Id);
-                car = existingCar ?? throw new DomainException($"Trying to update not existing car: {carEdt.Id}");
+                car = existingCar ?? throw new DomainException($"Trying to update not existing car: {carEdt.Id}");                
             }
+
+            CarFill(carEdt, car);
             await _unitOfWork.CommitAsync();
 
             return car.Id;
         }
 
-        public void Delete(Guid carGuidId)
+        public async Task Delete(Guid carGuidId)
         {
             var existingCar = _unitOfWork.Query<Car>().SingleOrDefault(x => x.Id == carGuidId);
             if(existingCar == null)
                 throw new DomainException($"Trying to delete not existing car: {carGuidId}");
             _unitOfWork.Remove(existingCar);
+            await _unitOfWork.CommitAsync();
         }
 
         public Car GetCar(Guid carGuidId)
@@ -58,6 +61,25 @@ namespace TestCars
         public List<Car> GetAllCars()
         {
             return _unitOfWork.Query<Car>().ToList();
+        }
+
+        public void CarFill(Car editCar, Car model)
+        {
+            if (!String.IsNullOrEmpty(editCar.Brand))
+                model.Brand = editCar.Brand;
+            if (!String.IsNullOrEmpty(editCar.Color))
+                model.Color = editCar.Color;
+            if (!String.IsNullOrEmpty(editCar.Equipment))
+                model.Equipment = editCar.Equipment;
+            if (!String.IsNullOrEmpty(editCar.Model))
+                model.Model = editCar.Model;
+            if (editCar.Price != null)
+            {
+                if (editCar.Price < 0)
+                    model.Price = 0;
+                else
+                    model.Price = editCar.Price;
+            }
         }
     }
 }

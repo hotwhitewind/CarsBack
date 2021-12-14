@@ -35,6 +35,7 @@ namespace TestCars
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TestCars", Version = "v1" });
             });
+
             services.AddDbContext<CarsDbContext>(options =>
             {
                 options
@@ -62,7 +63,7 @@ namespace TestCars
             app.UseMiddleware<ExceptionHandlerMiddleware>();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TestCars v1"));
             }

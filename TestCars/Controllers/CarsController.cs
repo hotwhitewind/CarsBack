@@ -30,9 +30,9 @@ namespace TestCars.Controllers
 
         [HttpPost]
         [Route("delete")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            _carsCRUDService.Delete(id);
+            await _carsCRUDService.Delete(id);
             return new OkResult();
         }
 

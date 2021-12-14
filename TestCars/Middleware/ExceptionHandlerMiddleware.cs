@@ -16,19 +16,16 @@ namespace TestCars.Middleware
     {
         private readonly RequestDelegate _next;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly ILogger _logger;
 
         public ExceptionHandlerMiddleware(
             RequestDelegate next,
-            IWebHostEnvironment hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment,
+            ILoggerFactory loggerFactory)
         {
             _next = next;
             _hostingEnvironment = hostingEnvironment;
-        }
-
-
-        private ILogger GetLogger(HttpContext context)
-        {
-            return context.RequestServices.GetRequiredService<ILogger>();
+            _logger = loggerFactory.CreateLogger<ExceptionHandlerMiddleware>();
         }
 
         private const string ErrorOccuredContactSupportMessage =
@@ -42,7 +39,7 @@ namespace TestCars.Middleware
             }
             catch (DomainException domainException)
             {
-                GetLogger(context)
+                _logger
                     .LogInformation(domainException, "Business error on request handling: {error}", 
                         domainException.Message);
 
@@ -56,7 +53,7 @@ namespace TestCars.Middleware
             }
             catch (Exception exception)
             {
-                GetLogger(context)
+                _logger
                     .LogError(exception, "Error on request handling: {error}", exception.Message);
 
                 if (!await HandleException(context, exception, 
